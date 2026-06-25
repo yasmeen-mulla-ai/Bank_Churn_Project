@@ -127,7 +127,7 @@ Highest accuracy and better overall performance.
 ### Prediction Output
 
 ![alt text](<Screenshot 2026-06-23 225236.png>) ![alt text](<Screenshot 2026-06-23 225315.png>) 
-
+![alt text](<Screenshot (58).png>) ![alt text](<Screenshot (59).png>) ![alt text](<Screenshot (60).png>)
 ---
 
 ## How to Run

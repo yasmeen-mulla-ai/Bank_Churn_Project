@@ -1,6 +1,8 @@
 ﻿import pandas as pd
 import numpy as np
 import joblib
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 from sklearn.model_selection import train_test_split
 from sklearn.compose import ColumnTransformer
@@ -177,7 +179,53 @@ rf_pred = rf_pipeline.predict(X_test)
 # EVALUATION FUNCTION
 # ==========================
 
-def evaluate_model(name, y_test, pred):
+def plot_evaluation(name, y_test, pred, filename=None):
+    metrics = {
+        "Accuracy": accuracy_score(y_test, pred),
+        "Precision": precision_score(y_test, pred),
+        "Recall": recall_score(y_test, pred),
+        "F1 Score": f1_score(y_test, pred),
+        "ROC AUC": roc_auc_score(y_test, pred)
+    }
+
+    cm = confusion_matrix(y_test, pred)
+
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+    sns.heatmap(
+        cm,
+        annot=True,
+        fmt='d',
+        cmap='Blues',
+        ax=axes[0]
+    )
+    axes[0].set(
+        title=f"{name} Confusion Matrix",
+        xlabel="Predicted",
+        ylabel="Actual"
+    )
+
+    axes[1].barh(
+        list(metrics.keys()),
+        list(metrics.values()),
+        color=['#4c72b0', '#55a868', '#c44e52', '#8172b2', '#ccb974']
+    )
+    axes[1].set(
+        title=f"{name} Evaluation Metrics",
+        xlim=(0, 1)
+    )
+    axes[1].invert_yaxis()
+
+    fig.tight_layout()
+
+    if filename:
+        fig.savefig(filename, dpi=150)
+
+    plt.show()
+    plt.close(fig)
+
+
+def evaluate_model(name, y_test, pred, save_chart=False):
 
     print("\n")
     print("="*40)
@@ -214,22 +262,32 @@ def evaluate_model(name, y_test, pred):
         confusion_matrix(y_test, pred)
     )
 
+    if save_chart:
+        filename = f"{name.lower().replace(' ', '_')}_evaluation.png"
+    else:
+        filename = None
+
+    plot_evaluation(name, y_test, pred, filename)
+
 evaluate_model(
     "Logistic Regression",
     y_test,
-    lr_pred
+    lr_pred,
+    save_chart=True
 )
 
 evaluate_model(
     "Decision Tree",
     y_test,
-    dt_pred
+    dt_pred,
+    save_chart=True
 )
 
 evaluate_model(
     "Random Forest",
     y_test,
-    rf_pred
+    rf_pred,
+    save_chart=True
 )
 
 # ==========================
